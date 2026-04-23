@@ -25,20 +25,20 @@ public class LoginForm extends JFrame {
     private void initUI(){
         setTitle                 ("Login - Sistem Informasi Sekolah");
         setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-        setPreferredSize         (new Dimension (900, 580));
-        setMinimumSize           (new Dimension (800, 520));
+        setPreferredSize         (new Dimension (450, 580));
+        setMinimumSize           (new Dimension (350, 520));
         setResizable             (false);
         
-        JPanel root = new JPanel (new GridLayout(1, 2));
-        root.add(buildBrandingPanel());
-        root.add(buildFormPanel());
-        setContentPane(root);
+        //JPanel root = new JPanel (new GridLayout(1, 2));
+        //root.add(buildBrandingPanel());
+        //root.add(buildFormPanel());
+        setContentPane(buildFormPanel());
         
         pack();
         setLocationRelativeTo(null);                                       
     }
     
-    private JPanel buildBrandingPanel(){
+    /*private JPanel buildBrandingPanel(){
         JPanel p = new JPanel(){
             @Override
             protected void paintComponent(Graphics g) {
@@ -104,7 +104,8 @@ public class LoginForm extends JFrame {
         p.add(content);
         return p;
     }
- 
+    **/
+    
     // ─ Right panel: white login form 
     private JPanel buildFormPanel() {
         JPanel p = new JPanel(new GridBagLayout());
@@ -118,41 +119,55 @@ public class LoginForm extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         gbc.insets = new Insets(0, 0, 0, 0);
-
-        // ── Header ──────────────────────────────────────────
-        JLabel welcome = new JLabel("Selamat Datang!");
+        
+        // ── Logo/Gambar 
+        try {
+            ImageIcon imageIcon = new ImageIcon("img/logo login.png");
+            Image scaledImage = imageIcon.getImage().getScaledInstance(300,200, Image.SCALE_SMOOTH);
+            JLabel logo = new JLabel(new ImageIcon(scaledImage));
+            logo.setHorizontalAlignment(SwingConstants.CENTER);
+            gbc.gridy = 0;
+            gbc.insets = new Insets(0, 0, 10, 10);
+            form.add(logo, gbc);
+        } catch (Exception e) {
+            System.out.println("Gambar tidak ditemukan: " + e.getMessage());        
+        }
+        
+        // ── Header 
+        JLabel welcome = new JLabel("SMP NEGERI XX KOTA BEKASI");
         welcome.setFont(new Font(Theme.FONT_NAME, Font.BOLD, 24));
         welcome.setForeground(Theme.TEXT_DARK);
         welcome.setHorizontalAlignment(SwingConstants.CENTER);
-        gbc.gridy = 0;
-        gbc.insets = new Insets(0, 0, 4, 0);
+        gbc.gridy = 1;
+        gbc.insets = new Insets(0, 0, 20, 0);
         form.add(welcome, gbc);
 
         JLabel subwelcome = new JLabel("Masuk ke akun Anda");
         subwelcome.setFont(Theme.FONT_SUBTITLE);
         subwelcome.setForeground(Theme.TEXT_MUTED);
         subwelcome.setHorizontalAlignment(SwingConstants.CENTER);
-        gbc.gridy = 1;
-        gbc.insets = new Insets(0, 0, 20, 0);
+        gbc.gridy = 2;
+        gbc.insets = new Insets(0, 0, 0, 0);
         form.add(subwelcome, gbc);
 
-        // ── Error label ──────────────────────────────────────
-        lblError = new JLabel(" ");
+        // ── Error label 
+        lblError = new JLabel("username atau password salah");
         lblError.setFont(new Font(Theme.FONT_NAME, Font.PLAIN, 12));
         lblError.setForeground(Theme.DANGER);
-        gbc.gridy = 2;
+        lblError.setHorizontalAlignment(SwingConstants.CENTER);
+        gbc.gridy = 3;
         gbc.insets = new Insets(0, 0, 4, 0);
         form.add(lblError, gbc);
 
-        // ── Username label ───────────────────────────────────
+        // ── Username label 
         JLabel lblUsr = new JLabel("Username");
         lblUsr.setFont(Theme.FONT_BOLD);
         lblUsr.setForeground(Theme.TEXT_BODY);
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         gbc.insets = new Insets(0, 0, 4, 0);
         form.add(lblUsr, gbc);
 
-        // ── Username field ───────────────────────────────────
+        // ── Username field
         txtUsername = new JTextField();
         txtUsername.setFont(new Font(Theme.FONT_NAME, Font.PLAIN, 14));
         txtUsername.setPreferredSize(new Dimension(360, 40));
@@ -161,19 +176,19 @@ public class LoginForm extends JFrame {
             BorderFactory.createLineBorder(Theme.BORDER, 1, true),
             BorderFactory.createEmptyBorder(0, 10, 0, 10)
         ));
-        gbc.gridy = 4;
+        gbc.gridy = 5;
         gbc.insets = new Insets(0, 0, 12, 0);
         form.add(txtUsername, gbc);
 
-        // ── Password label ───────────────────────────────────
+        // ── Password label 
         JLabel lblPwd = new JLabel("Password");
         lblPwd.setFont(Theme.FONT_BOLD);
         lblPwd.setForeground(Theme.TEXT_BODY);
-        gbc.gridy = 5;
+        gbc.gridy = 6;
         gbc.insets = new Insets(0, 0, 4, 0);
         form.add(lblPwd, gbc);
 
-        // ── Password field ───────────────────────────────────
+        // ── Password field 
         txtPassword = new JPasswordField();
         txtPassword.setFont(new Font(Theme.FONT_NAME, Font.PLAIN, 14));
         txtPassword.setPreferredSize(new Dimension(360, 40));
@@ -182,11 +197,11 @@ public class LoginForm extends JFrame {
             BorderFactory.createLineBorder(Theme.BORDER, 1, true),
             BorderFactory.createEmptyBorder(0, 10, 0, 10)
         ));
-        gbc.gridy = 6;
+        gbc.gridy = 7;
         gbc.insets = new Insets(0, 0, 20, 0);
         form.add(txtPassword, gbc);
 
-        // ── Login button ─────────────────────────────────────
+        // ── Login button 
         btnLogin = new JButton("Masuk") {
             @Override protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
@@ -208,20 +223,20 @@ public class LoginForm extends JFrame {
         btnLogin.setBorderPainted(false);
         btnLogin.setContentAreaFilled(false);
         btnLogin.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        gbc.gridy = 7;
+        gbc.gridy = 8;
         gbc.insets = new Insets(0, 0, 0, 0);
         form.add(btnLogin, gbc);
 
         // Hint
-        JLabel hint = new JLabel();
+        JLabel hint = new JLabel("default akun");
         hint.setFont(new Font(Theme.FONT_NAME, Font.PLAIN, 11));
         hint.setForeground(Theme.TEXT_MUTED);       
         hint.setHorizontalAlignment(SwingConstants.CENTER);
-        gbc.gridy = 8;
+        gbc.gridy = 9;
         gbc.insets = new Insets(8, 0, 0, 0);
         form.add(hint, gbc);
         
-        // ── Tambahkan form ke panel utama (tengah) ───────────
+        // ── Tambahkan form ke panel utama (tengah)
         p.add(form, new GridBagConstraints());
 
         // Enter key
