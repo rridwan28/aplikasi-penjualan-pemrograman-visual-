@@ -1,4 +1,4 @@
-package ui.forms;
+package ui;
 
 import dao.UserDAO;
 import model.User;
