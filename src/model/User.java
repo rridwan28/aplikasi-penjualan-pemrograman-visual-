@@ -23,7 +23,7 @@ public class User {
     }
     
     public int getUserId()                  {return userId; }
-    public void SetUserId(int v )           {this.userId = v; }
+    public void setUserId(int v )           {this.userId = v; }
     public String getUsername()             {return username; }
     public void setUsername (String v)      {this.username = v; }
     public String getPassword()             {return password; }

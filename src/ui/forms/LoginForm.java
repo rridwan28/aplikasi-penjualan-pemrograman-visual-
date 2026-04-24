@@ -1,4 +1,4 @@
-package ui;
+package ui.forms;
 
 import dao.UserDAO;
 import model.User;
@@ -29,9 +29,9 @@ public class LoginForm extends JFrame {
         setMinimumSize           (new Dimension (350, 520));
         setResizable             (false);
         
-        //JPanel root = new JPanel (new GridLayout(1, 2));
-        //root.add(buildBrandingPanel());
-        //root.add(buildFormPanel());initUI
+        JPanel root = new JPanel (new GridLayout(1, 2));
+        root.add(buildBrandingPanel());
+        root.add(buildFormPanel());
         
         setContentPane(buildFormPanel());
         
@@ -39,7 +39,7 @@ public class LoginForm extends JFrame {
         setLocationRelativeTo(null);                                       
     }
     
-    /*private JPanel buildBrandingPanel(){
+    private JPanel buildBrandingPanel(){
         JPanel p = new JPanel(){
             @Override
             protected void paintComponent(Graphics g) {
@@ -105,7 +105,7 @@ public class LoginForm extends JFrame {
         p.add(content);
         return p;
     }
-    **/
+    
     
     // ─ Right panel: white login form 
     private JPanel buildFormPanel() {
