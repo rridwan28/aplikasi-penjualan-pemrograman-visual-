@@ -2,7 +2,7 @@ package ui;
 
 import dao.UserDAO;
 import model.User;
-//import util.Session;
+import util.Session;
 import util.Theme;
 import javax.swing.*;
 import javax.swing.border.*;
@@ -31,7 +31,8 @@ public class LoginForm extends JFrame {
         
         //JPanel root = new JPanel (new GridLayout(1, 2));
         //root.add(buildBrandingPanel());
-        //root.add(buildFormPanel());
+        //root.add(buildFormPanel());initUI
+        
         setContentPane(buildFormPanel());
         
         pack();
@@ -258,15 +259,21 @@ public class LoginForm extends JFrame {
  
         User user = userDAO.login(uname, pwd);
         if (user != null) {
-            //Session.CurrentUser = user;
+            Session.currentUser = user;
             dispose();
-            MainFrame mainFrame = new MainFrame();
-            mainFrame.setVisible(true);
+            // ── Route berdasarkan role ──
+            if ("admin".equals(user.getRole())) {
+                new AdminMainFrame().setVisible(true);
+            } else {
+                new AdminMainFrame().setVisible(true);
+            }
         } else {
             lblError.setText("Username atau password salah.");
             txtPassword.setText("");
         }
-    }            
+    }
+
+                
     
     public static void main(String[] args) {
                 SwingUtilities.invokeLater(() -> {

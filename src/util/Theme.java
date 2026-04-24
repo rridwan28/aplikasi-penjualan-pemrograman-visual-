@@ -66,4 +66,12 @@ public class Theme {
     public static final int ROW_HEIGHT     = 36;
     public static final int BTN_HEIGHT     = 32;
     public static final int INPUT_HEIGHT   = 32;
+
+    //WARNA UNTUK GDASHBOARD GURU
+    public static final Color GURU_SIDEBAR_BG        = new Color(0x1E293B);
+    public static final Color GURU_SIDEBAR_ACTIVE    = new Color(0x3B82F6);
+    public static final Color GURU_SIDEBAR_HOVER     = new Color(0x334155);
+    public static final Color GURU_SIDEBAR_TEXT      = new Color(0xCBD5E1);
+    public static final Color GURU_SIDEBAR_SECTION   = new Color(0x64748B);
+    public static final Color GURU_TOPBAR_BG         = new Color(0x0F172A);
 }
