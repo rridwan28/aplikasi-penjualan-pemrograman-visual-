@@ -30,11 +30,35 @@ public class MasterUserPanel extends BasePanel {
         JPanel wrapper = new JPanel();
         wrapper.setOpaque(false);
         wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.Y_AXIS));
+        wrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
+        wrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
-        // Header
-        wrapper.add(buildPageHeader("Master User", "Kelola akun admin dan guru yang dapat mengakses sistem"));
-        wrapper.add(Box.createVerticalStrut(Theme.GAP_LG));
+        // Header        
+        JPanel headerPanel = new JPanel((new BorderLayout()));
+        headerPanel.setOpaque(false);
+        headerPanel.setBorder(new EmptyBorder(0, 0, Theme.GAP_LG, 0));
+       
+        JPanel headerText = new JPanel();
+        headerText.setOpaque(false);
+        headerText.setLayout(new BoxLayout(headerText, BoxLayout.Y_AXIS));        
+        
+        JLabel titleLabel = new JLabel("Master User");
+        titleLabel.setFont(Theme.FONT_TITLE);
+        titleLabel.setForeground(Theme.TEXT_DARK);  
+      
+        JLabel subtitleLabel = new JLabel("Kelola akun admin dan guru yang dapat mengakses sistem");
+        subtitleLabel.setFont(Theme.FONT_SUBTITLE);
+        subtitleLabel.setForeground(Theme.TEXT_MUTED);
+        
+        headerText.add(titleLabel);
+        headerText.add(Box.createVerticalStrut(3));
+        headerText.add(subtitleLabel);
 
+        headerPanel.add(headerText, BorderLayout.WEST);
+
+        wrapper.add(headerPanel);
+        wrapper.add(Box.createVerticalStrut(Theme.GAP_XS));        
+        
         // Toolbar
         txtSearch = buildSearchField("🔍  Cari nama atau username...");
         txtSearch.addKeyListener(new KeyAdapter() {
@@ -96,12 +120,19 @@ public class MasterUserPanel extends BasePanel {
         pageInfo.setFont(Theme.FONT_SMALL);
         pageInfo.setForeground(Theme.TEXT_MUTED);
         footer.add(pageInfo);
+        
         card.add(footer, BorderLayout.SOUTH);
-
+        
+        card.setAlignmentX(Component.LEFT_ALIGNMENT);
+        wrapper.add(card);
+        wrapper.add(Box.createVerticalGlue());  
+        
         JScrollPane outerScroll = new JScrollPane(wrapper);
         outerScroll.setBorder(BorderFactory.createEmptyBorder());
         outerScroll.setOpaque(false);
         outerScroll.getViewport().setOpaque(false);
+        
+        add(outerScroll, BorderLayout.CENTER);
 
         // Add card directly below wrapper in a fixed layout
         JPanel mainPanel = new JPanel(new BorderLayout());

@@ -177,7 +177,8 @@ public class AdminMainFrame extends JFrame {
  
     private void addMenuBtn(JPanel parent, String text, String pageKey) {
         JButton btn = createSidebarBtn(text, pageKey);
-        btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
+        btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 44));
+        btn.setPreferredSize(new Dimension(Integer.MAX_VALUE, 44));
         btn.addActionListener(e -> {
             showPage(pageKey);
             setActiveMenu(btn);
@@ -218,6 +219,8 @@ public class AdminMainFrame extends JFrame {
             }
         };
         btn.setHorizontalAlignment(SwingConstants.LEFT);
+        btn.setHorizontalTextPosition(SwingConstants.RIGHT);
+        btn.setIconTextGap(10);        
         btn.setFont(Theme.FONT_MENU);
         btn.setForeground(Theme.TEXT_BODY);
         btn.setBorder(new EmptyBorder(0, 20, 0, 20));

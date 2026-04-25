@@ -26,17 +26,32 @@ public class UserDAO {
     //mengambil semua user
     public List<User>findAll(){
         List<User> list = new ArrayList<>();
-        String sql      = "SELECT * FROM users ORDER BY role, nama_lengkap";        
-        try (Connection c = DBConnection.getConnection();
-             PreparedStatement ps = c.prepareStatement(sql)){
-            String kw = "%" + keyword + "%";
-            ps.setString(1, kw); ps.setString(2, kw);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) list.add(mapRow(rs));            
-        } 
+        String sql;
         
-        catch (SQLException e) {e.printStackTrace();}
-        return list; 
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            sql = "SELECT * FROM users WHERE nama_lengkap LIKE ? OR role LIKE ? ORDER BY role, nama_lengkap";
+        }
+        else {
+            sql = "SELECT * FROM users ORDER BY role, nama_lengkap";
+        }
+        
+        try (Connection c = DBConnection.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                String kw = "%" + keyword + "%";
+                ps.setString(1, kw);
+                ps.setString(2, kw);
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) list.add(mapRow(rs));
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
         
     }
     

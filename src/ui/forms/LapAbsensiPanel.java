@@ -57,7 +57,7 @@ public class LapAbsensiPanel extends BasePanel {
 
         JPanel card = buildCard();
         card.add(buildCardHeader("📊  Rekap Kehadiran"), BorderLayout.NORTH);
-        model = new DefaultTableModel(COLS, 0) { @Override public boolean isCellEditable(int r,int c){return false;} };
+        model = new NonEditableTableModel(COLS, 0);
         table = new StyledTable(model);
         int[] widths = {40,180,80,60,60,60,60,80,80,100};
         for (int i=0;i<widths.length;i++) table.getColumnModel().getColumn(i).setPreferredWidth(widths[i]);
@@ -91,5 +91,13 @@ public class LapAbsensiPanel extends BasePanel {
         f.setPreferredSize(new Dimension(120, Theme.INPUT_HEIGHT));
         f.setBorder(new CompoundBorder(new LineBorder(Theme.BORDER,1,true), new EmptyBorder(0,8,0,8)));
         return f;
+    }
+    
+    private static class NonEditableTableModel extends DefaultTableModel {
+        public NonEditableTableModel(String[] cols, int rows) {
+            super(cols, rows);
+        }
+        @Override
+        public boolean isCellEditable(int r, int c) { return false; }    
     }
 }

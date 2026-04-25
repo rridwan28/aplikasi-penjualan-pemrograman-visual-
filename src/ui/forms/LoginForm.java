@@ -265,16 +265,14 @@ public class LoginForm extends JFrame {
             if ("admin".equals(user.getRole())) {
                 new AdminMainFrame().setVisible(true);
             } else {
-                new AdminMainFrame().setVisible(true);
+                new GuruMainFrame().setVisible(true);
             }
         } else {
             lblError.setText("Username atau password salah.");
             txtPassword.setText("");
         }
     }
-
-                
-    
+                    
     public static void main(String[] args) {
                 SwingUtilities.invokeLater(() -> {
             try {
