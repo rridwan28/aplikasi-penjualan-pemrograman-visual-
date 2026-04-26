@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 12, 2026 at 05:03 PM
+-- Generation Time: Apr 25, 2026 at 05:32 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,52 @@ SET time_zone = "+00:00";
 --
 -- Database: `penjualan`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `barang`
+--
+
+CREATE TABLE `barang` (
+  `kd_barang` varchar(20) NOT NULL,
+  `nm_brg` varchar(40) NOT NULL,
+  `jenis` enum('Makanan','Minuman','','') NOT NULL,
+  `hargabeli` decimal(10,0) NOT NULL,
+  `hargajual` decimal(10,0) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `barang`
+--
+
+INSERT INTO `barang` (`kd_barang`, `nm_brg`, `jenis`, `hargabeli`, `hargajual`) VALUES
+('B001', 'Coca Cola', 'Minuman', 5000, 6000),
+('B003', 'Mie Goreng', 'Makanan', 2200, 3500),
+('B004', 'Milo', 'Minuman', 6000, 7500);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `kasir`
+--
+
+CREATE TABLE `kasir` (
+  `id_kasir` varchar(10) NOT NULL,
+  `nm_kasir` varchar(25) NOT NULL,
+  `jenis_kelamin` varchar(25) NOT NULL,
+  `no_telepon` varchar(25) NOT NULL,
+  `agama` varchar(25) NOT NULL,
+  `alamat` varchar(25) NOT NULL,
+  `password` varchar(15) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `kasir`
+--
+
+INSERT INTO `kasir` (`id_kasir`, `nm_kasir`, `jenis_kelamin`, `no_telepon`, `agama`, `alamat`, `password`) VALUES
+('K001', 'Ridwan', 'Laki-Laki', '0812345678', 'Islam', 'Kota Bekasi', 'ridwan123');
 
 -- --------------------------------------------------------
 
@@ -50,12 +96,23 @@ INSERT INTO `pelanggan` (`id`, `nmplgn`, `jenis`, `telepon`, `alamat`) VALUES
 ('ID009', 'Hendra Gunawan', 'Laki - Laki', '089012345678', 'Denpasar'),
 ('ID010', 'Fitri Handayani', 'Perempuan', '081122334455', 'Manado'),
 ('ID012', 'Reisya S', 'Perempuan', '0897613481201', 'Bogor'),
-('ID013', 'Ridwan Nugraha', 'Laki - Laki', '08172639121219', 'Bekasi'),
-('ID014', 'Raffi', 'Laki - Laki', '098761252318', 'Jakarta');
+('ID013', 'Ridwan Nugraha', 'Laki - Laki', '08172639121219', 'Bekasi');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `barang`
+--
+ALTER TABLE `barang`
+  ADD PRIMARY KEY (`kd_barang`);
+
+--
+-- Indexes for table `kasir`
+--
+ALTER TABLE `kasir`
+  ADD PRIMARY KEY (`id_kasir`);
 
 --
 -- Indexes for table `pelanggan`
