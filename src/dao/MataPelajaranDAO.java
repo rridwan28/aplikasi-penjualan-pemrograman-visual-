@@ -23,26 +23,24 @@ public class MataPelajaranDAO {
     }
 
     public boolean insert(MataPelajaran m) {
-        String sql = "INSERT INTO mata_pelajaran(kode_mapel,nama_mapel,kkm,kategori) VALUES(?,?,?,?)";
+        String sql = "INSERT INTO mata_pelajaran(kode_mapel,nama_mapel,kkm) VALUES(?,?,?)";
         try (Connection c = DBConnection.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, m.getKodeMapel());
             ps.setString(2, m.getNamaMapel());
             ps.setDouble(3, m.getKkm());
-            ps.setString(4, m.getKategori());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) { e.printStackTrace(); return false; }
     }
 
     public boolean update(MataPelajaran m) {
-        String sql = "UPDATE mata_pelajaran SET kode_mapel=?,nama_mapel=?,kkm=?,kategori=? WHERE mapel_id=?";
+        String sql = "UPDATE mata_pelajaran SET kode_mapel=?,nama_mapel=?,kkm=?, WHERE mapel_id=?";
         try (Connection c = DBConnection.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, m.getKodeMapel());
             ps.setString(2, m.getNamaMapel());
             ps.setDouble(3, m.getKkm());
-            ps.setString(4, m.getKategori());
-            ps.setInt(5, m.getMapelId());
+            ps.setInt(4, m.getMapelId());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) { e.printStackTrace(); return false; }
     }
@@ -62,7 +60,6 @@ public class MataPelajaranDAO {
         m.setKodeMapel(rs.getString("kode_mapel"));
         m.setNamaMapel(rs.getString("nama_mapel"));
         m.setKkm(rs.getDouble("kkm"));
-        m.setKategori(rs.getString("kategori"));
         return m;
     }
 }

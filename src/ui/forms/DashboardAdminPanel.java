@@ -40,8 +40,8 @@ private void buildUI() {
 
     String today = new SimpleDateFormat("EEEE, dd MMMM yyyy",
                      new java.util.Locale("id","ID")).format(new Date());
-    
-    JLabel titleLabel = new JLabel("Dashboard Administrator 👋");
+     
+    JLabel titleLabel = new JLabel("Dashboard Administrator");
     titleLabel.setFont(Theme.FONT_TITLE);
     titleLabel.setForeground(Theme.TEXT_DARK);
     titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);

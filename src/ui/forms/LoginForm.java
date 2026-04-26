@@ -9,6 +9,7 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
+import java.net.URL;
 
 public class LoginForm extends JFrame {
     
@@ -122,17 +123,18 @@ public class LoginForm extends JFrame {
         gbc.insets = new Insets(0, 0, 0, 0);
         
         // ── Logo/Gambar 
-        try {
-            ImageIcon imageIcon = new ImageIcon("img/logo login.png");
-            Image scaledImage = imageIcon.getImage().getScaledInstance(300,200, Image.SCALE_SMOOTH);
-            JLabel logo = new JLabel(new ImageIcon(scaledImage));
-            logo.setHorizontalAlignment(SwingConstants.CENTER);
-            gbc.gridy = 0;
-            gbc.insets = new Insets(0, 0, 10, 10);
-            form.add(logo, gbc);
-        } catch (Exception e) {
-            System.out.println("Gambar tidak ditemukan: " + e.getMessage());        
-        }
+    try {
+        ImageIcon imageIcon = new ImageIcon(getClass().getResource("/icons/logo login.png"));
+        Image scaledImage = imageIcon.getImage().getScaledInstance(300, 200, Image.SCALE_SMOOTH);
+        JLabel logo = new JLabel(new ImageIcon(scaledImage));
+        logo.setHorizontalAlignment(SwingConstants.CENTER);
+        gbc.gridy = 0;
+        gbc.insets = new Insets(0, 0, 10, 10);
+        form.add(logo, gbc);
+    } catch (Exception e) {
+        System.out.println("Error loading image: " + e.getMessage());
+        e.printStackTrace();
+    }
         
         // ── Header 
         JLabel welcome = new JLabel("SMP NEGERI XX KOTA BEKASI");

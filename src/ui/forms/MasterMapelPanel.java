@@ -21,17 +21,42 @@ public class MasterMapelPanel extends BasePanel {
     private StyledTable table;
     private DefaultTableModel model;
     private List<MataPelajaran> data;
-    private static final String[] COLS = {"#","Kode","Nama Mata Pelajaran","Kategori","KKM"};
+    private static final String[] COLS = {"#","Kode","Nama Mata Pelajaran","KKM"};
 
     public MasterMapelPanel() { buildUI(); }
 
     private void buildUI() {
-        JPanel main = new JPanel(new BorderLayout()); main.setOpaque(false);
-        JPanel top  = new JPanel(); top.setOpaque(false);
-        top.setLayout(new BoxLayout(top, BoxLayout.Y_AXIS));
+        JPanel wrapper = new JPanel();
+        wrapper.setOpaque(false);
+        wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.Y_AXIS));
+        wrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
+        wrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        
+        // Header        
+        JPanel headerPanel = new JPanel((new BorderLayout()));
+        headerPanel.setOpaque(false);
+        headerPanel.setBorder(new EmptyBorder(0, 0, Theme.GAP_LG, 0));
+       
+        JPanel headerText = new JPanel();
+        headerText.setOpaque(false);
+        headerText.setLayout(new BoxLayout(headerText, BoxLayout.Y_AXIS));        
+        
+        JLabel titleLabel = new JLabel("Master Mata Pelajaran");
+        titleLabel.setFont(Theme.FONT_TITLE);
+        titleLabel.setForeground(Theme.TEXT_DARK);  
+      
+        JLabel subtitleLabel = new JLabel("Daftar semua mata pelajaran beserta nilai KKM");
+        subtitleLabel.setFont(Theme.FONT_SUBTITLE);
+        subtitleLabel.setForeground(Theme.TEXT_MUTED);
+        
+        headerText.add(titleLabel);
+        headerText.add(Box.createVerticalStrut(3));
+        headerText.add(subtitleLabel);
 
-        top.add(buildPageHeader("Master Mata Pelajaran","Daftar semua mata pelajaran beserta nilai KKM"));
-        top.add(Box.createVerticalStrut(Theme.GAP_LG));
+        headerPanel.add(headerText, BorderLayout.WEST);
+
+        wrapper.add(headerPanel);
+        wrapper.add(Box.createVerticalStrut(Theme.GAP_XS));       
 
         JTextField search = buildSearchField("🔍  Cari nama atau kode...");
         search.addKeyListener(new KeyAdapter() {
@@ -47,8 +72,8 @@ public class MasterMapelPanel extends BasePanel {
         StyledButton btnAdd = new StyledButton("＋  Tambah Mapel");
         btnAdd.setPreferredSize(new Dimension(150, Theme.BTN_HEIGHT));
         btnAdd.addActionListener(e -> openForm(null));
-        top.add(buildToolbar(new JComponent[]{search}, new JComponent[]{btnAdd}));
-        top.add(Box.createVerticalStrut(Theme.GAP_MD));
+        wrapper.add(buildToolbar(new JComponent[]{search}, new JComponent[]{btnAdd}));
+        wrapper.add(Box.createVerticalStrut(Theme.GAP_MD));
 
         JPanel card = buildCard();
         card.add(buildCardHeader("📚  Daftar Mata Pelajaran"), BorderLayout.NORTH);
@@ -59,7 +84,6 @@ public class MasterMapelPanel extends BasePanel {
         table.getColumnModel().getColumn(1).setPreferredWidth(80);
         table.getColumnModel().getColumn(2).setPreferredWidth(220);
         table.getColumnModel().getColumn(3).setPreferredWidth(120);
-        table.getColumnModel().getColumn(4).setPreferredWidth(80);
         table.addMouseListener(new MouseAdapter() {
             @Override public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount()==2 && table.getSelectedRow()>=0) openForm(data.get(table.getSelectedRow()));
@@ -76,9 +100,14 @@ public class MasterMapelPanel extends BasePanel {
 
         JScrollPane sc = new JScrollPane(table); sc.setBorder(BorderFactory.createEmptyBorder());
         card.add(sc, BorderLayout.CENTER);
-        main.add(top, BorderLayout.NORTH);
-        main.add(card, BorderLayout.CENTER);
-        add(main, BorderLayout.CENTER);
+        
+        //untuk manggil semua main panel
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setOpaque(false);
+        mainPanel.add(wrapper, BorderLayout.NORTH);
+        mainPanel.add(card, BorderLayout.CENTER);
+
+        add(mainPanel, BorderLayout.CENTER);
     }
 
     public void loadData() { data = dao.findAll(); fillTable(data); }
@@ -87,7 +116,7 @@ public class MasterMapelPanel extends BasePanel {
         model.setRowCount(0);
         int i=1;
         for (MataPelajaran m : list)
-            model.addRow(new Object[]{i++, m.getKodeMapel(), m.getNamaMapel(), m.getKategori(), String.format("%.2f", m.getKkm())});
+            model.addRow(new Object[]{i++, m.getKodeMapel(), m.getNamaMapel(), String.format("%.2f", m.getKkm())});
     }
 
     private void openForm(MataPelajaran ex) {
@@ -101,12 +130,10 @@ public class MasterMapelPanel extends BasePanel {
         JTextField txtKode = field(isEdit ? ex.getKodeMapel() : "");
         JTextField txtNama = field(isEdit ? ex.getNamaMapel() : "");
         JTextField txtKkm  = field(isEdit ? String.valueOf(ex.getKkm()) : "75.00");
-        JTextField txtKat  = field(isEdit && ex.getKategori()!=null ? ex.getKategori() : "");
 
         addF(body,"Kode Mapel *", txtKode); body.add(Box.createVerticalStrut(8));
         addF(body,"Nama Mata Pelajaran *", txtNama); body.add(Box.createVerticalStrut(8));
         addF(body,"KKM (0-100)",  txtKkm); body.add(Box.createVerticalStrut(8));
-        addF(body,"Kategori",     txtKat);
 
         JPanel foot = new JPanel(new FlowLayout(FlowLayout.RIGHT,8,8));
         foot.setBackground(new Color(0xF9FAFB));
@@ -118,7 +145,6 @@ public class MasterMapelPanel extends BasePanel {
             MataPelajaran m = isEdit ? ex : new MataPelajaran();
             m.setKodeMapel(txtKode.getText().trim()); m.setNamaMapel(txtNama.getText().trim());
             try { m.setKkm(Double.parseDouble(txtKkm.getText().trim())); } catch (Exception ignored) { m.setKkm(75); }
-            m.setKategori(txtKat.getText().trim());
             boolean ok = isEdit ? dao.update(m) : dao.insert(m);
             if (ok) { showSuccess("Berhasil disimpan."); dlg.dispose(); loadData(); } else showError("Gagal. Cek kode sudah ada?");
         });

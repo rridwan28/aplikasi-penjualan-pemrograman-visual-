@@ -29,19 +29,45 @@ public class TransKelasPanel extends BasePanel {
     public TransKelasPanel() { buildUI(); }
 
     private void buildUI() {
-        JPanel main = new JPanel(new BorderLayout()); main.setOpaque(false);
-        JPanel top  = new JPanel(); top.setOpaque(false);
-        top.setLayout(new BoxLayout(top, BoxLayout.Y_AXIS));
-        top.add(buildPageHeader("Transaksi Kelas","Kelola pembagian siswa ke kelas dan penugasan guru"));
-        top.add(Box.createVerticalStrut(Theme.GAP_LG));
+        JPanel wrapper = new JPanel();
+        wrapper.setOpaque(false);
+        wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.Y_AXIS));
+        wrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
+        wrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        
+        // Header        
+        JPanel headerPanel = new JPanel((new BorderLayout()));
+        headerPanel.setOpaque(false);
+        headerPanel.setBorder(new EmptyBorder(0, 0, Theme.GAP_LG, 0));
+       
+        JPanel headerText = new JPanel();
+        headerText.setOpaque(false);
+        headerText.setLayout(new BoxLayout(headerText, BoxLayout.Y_AXIS));        
+        
+        JLabel titleLabel = new JLabel("Transaksi Kelas");
+        titleLabel.setFont(Theme.FONT_TITLE);
+        titleLabel.setForeground(Theme.TEXT_DARK);  
+      
+        JLabel subtitleLabel = new JLabel("Kelola pembagian siswa ke kelas dan penugasan guru");
+        subtitleLabel.setFont(Theme.FONT_SUBTITLE);
+        subtitleLabel.setForeground(Theme.TEXT_MUTED);
+        
+        headerText.add(titleLabel);
+        headerText.add(Box.createVerticalStrut(3));
+        headerText.add(subtitleLabel);
 
+        headerPanel.add(headerText, BorderLayout.WEST);
+
+        wrapper.add(headerPanel);
+        wrapper.add(Box.createVerticalStrut(Theme.GAP_XS));           
+        
         JComboBox<String> cmbTA = buildCombo("2025/2026","2024/2025");
         JComboBox<String> cmbSem = buildCombo("Semester 1","Semester 2");
         StyledButton btnAdd = new StyledButton("＋  Tambah Kelas");
         btnAdd.setPreferredSize(new Dimension(150,Theme.BTN_HEIGHT));
         btnAdd.addActionListener(e -> openForm(null));
-        top.add(buildToolbar(new JComponent[]{new JLabel("T.A:"), cmbTA, new JLabel("  Sem:"), cmbSem}, new JComponent[]{btnAdd}));
-        top.add(Box.createVerticalStrut(Theme.GAP_MD));
+        wrapper.add(buildToolbar(new JComponent[]{new JLabel("T.A:"), cmbTA, new JLabel("  Sem:"), cmbSem}, new JComponent[]{btnAdd}));
+        wrapper.add(Box.createVerticalStrut(Theme.GAP_MD));
 
         JPanel card = buildCard();
         card.add(buildCardHeader("🏫  Daftar Kelas"), BorderLayout.NORTH);
@@ -60,9 +86,14 @@ public class TransKelasPanel extends BasePanel {
         });
         JScrollPane sc = new JScrollPane(table); sc.setBorder(BorderFactory.createEmptyBorder());
         card.add(sc, BorderLayout.CENTER);
-        main.add(top, BorderLayout.NORTH);
-        main.add(card, BorderLayout.CENTER);
-        add(main, BorderLayout.CENTER);
+        
+        //untuk manggil semua main panel
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setOpaque(false);
+        mainPanel.add(wrapper, BorderLayout.NORTH);
+        mainPanel.add(card, BorderLayout.CENTER);
+
+        add(mainPanel, BorderLayout.CENTER);
     }
 
     public void loadData() { data = kelasDao.findAll(); fillTable(data); }

@@ -28,10 +28,37 @@ public class LapAbsensiPanel extends BasePanel {
     public LapAbsensiPanel() { buildUI(); }
 
     private void buildUI() {
-        JPanel main = new JPanel(new BorderLayout()); main.setOpaque(false);
-        JPanel top  = new JPanel(); top.setOpaque(false); top.setLayout(new BoxLayout(top, BoxLayout.Y_AXIS));
-        top.add(buildPageHeader("Laporan Absensi Siswa","Rekap kehadiran siswa per periode"));
-        top.add(Box.createVerticalStrut(Theme.GAP_LG));
+        JPanel wrapper = new JPanel();
+        wrapper.setOpaque(false);
+        wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.Y_AXIS));
+        wrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
+        wrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        
+        // Header        
+        JPanel headerPanel = new JPanel((new BorderLayout()));
+        headerPanel.setOpaque(false);
+        headerPanel.setBorder(new EmptyBorder(0, 0, Theme.GAP_LG, 0));
+       
+        JPanel headerText = new JPanel();
+        headerText.setOpaque(false);
+        headerText.setLayout(new BoxLayout(headerText, BoxLayout.Y_AXIS));        
+        
+        JLabel titleLabel = new JLabel("Laporan Absensi Siswa");
+        titleLabel.setFont(Theme.FONT_TITLE);
+        titleLabel.setForeground(Theme.TEXT_DARK);  
+      
+        JLabel subtitleLabel = new JLabel("Rekap kehadiran siswa per periode");
+        subtitleLabel.setFont(Theme.FONT_SUBTITLE);
+        subtitleLabel.setForeground(Theme.TEXT_MUTED);
+        
+        headerText.add(titleLabel);
+        headerText.add(Box.createVerticalStrut(3));
+        headerText.add(subtitleLabel);
+
+        headerPanel.add(headerText, BorderLayout.WEST);
+
+        wrapper.add(headerPanel);
+        wrapper.add(Box.createVerticalStrut(Theme.GAP_XS));   
 
         // Filter card
         JPanel filterCard = buildCard();
@@ -52,8 +79,9 @@ public class LapAbsensiPanel extends BasePanel {
         filterInner.add(new JLabel("  s/d:")); filterInner.add(txtSampai);
         filterInner.add(btnTampil); filterInner.add(btnCetak);
         filterCard.add(filterInner, BorderLayout.CENTER);
-        top.add(filterCard);
-        top.add(Box.createVerticalStrut(Theme.GAP_MD));
+        
+        wrapper.add(filterCard);
+        wrapper.add(Box.createVerticalStrut(Theme.GAP_MD));
 
         JPanel card = buildCard();
         card.add(buildCardHeader("📊  Rekap Kehadiran"), BorderLayout.NORTH);
@@ -63,8 +91,13 @@ public class LapAbsensiPanel extends BasePanel {
         for (int i=0;i<widths.length;i++) table.getColumnModel().getColumn(i).setPreferredWidth(widths[i]);
         JScrollPane sc = new JScrollPane(table); sc.setBorder(BorderFactory.createEmptyBorder());
         card.add(sc, BorderLayout.CENTER);
-        main.add(top, BorderLayout.NORTH); main.add(card, BorderLayout.CENTER);
-        add(main, BorderLayout.CENTER);
+        
+        //untuk manggil semua main panel
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setOpaque(false);
+        mainPanel.add(wrapper, BorderLayout.NORTH);
+
+        add(mainPanel, BorderLayout.CENTER);      
     }
 
     public void init() {

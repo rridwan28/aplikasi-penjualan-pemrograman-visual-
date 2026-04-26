@@ -27,10 +27,37 @@ public class DaftarNilaiPanel extends BasePanel {
     public DaftarNilaiPanel() { buildUI(); }
 
     private void buildUI() {
-        JPanel main = new JPanel(new BorderLayout()); main.setOpaque(false);
-        JPanel top  = new JPanel(); top.setOpaque(false); top.setLayout(new BoxLayout(top, BoxLayout.Y_AXIS));
-        top.add(buildPageHeader("Daftar Nilai","Rekap nilai rata-rata seluruh siswa per kelas"));
-        top.add(Box.createVerticalStrut(Theme.GAP_LG));
+        JPanel wrapper = new JPanel();
+        wrapper.setOpaque(false);
+        wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.Y_AXIS));
+        wrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
+        wrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        
+        // Header        
+        JPanel headerPanel = new JPanel((new BorderLayout()));
+        headerPanel.setOpaque(false);
+        headerPanel.setBorder(new EmptyBorder(0, 0, Theme.GAP_LG, 0));
+       
+        JPanel headerText = new JPanel();
+        headerText.setOpaque(false);
+        headerText.setLayout(new BoxLayout(headerText, BoxLayout.Y_AXIS));        
+        
+        JLabel titleLabel = new JLabel("Daftar Nilai");
+        titleLabel.setFont(Theme.FONT_TITLE);
+        titleLabel.setForeground(Theme.TEXT_DARK);  
+      
+        JLabel subtitleLabel = new JLabel("Rekap nilai rata-rata seluruh siswa per kelas");
+        subtitleLabel.setFont(Theme.FONT_SUBTITLE);
+        subtitleLabel.setForeground(Theme.TEXT_MUTED);
+        
+        headerText.add(titleLabel);
+        headerText.add(Box.createVerticalStrut(3));
+        headerText.add(subtitleLabel);
+
+        headerPanel.add(headerText, BorderLayout.WEST);
+
+        wrapper.add(headerPanel);
+        wrapper.add(Box.createVerticalStrut(Theme.GAP_XS));         
 
         JPanel fc = buildCard(); fc.setMaximumSize(new Dimension(Integer.MAX_VALUE,80));
         JPanel fi = new JPanel(new FlowLayout(FlowLayout.LEFT,10,10)); fi.setBackground(Color.WHITE);
@@ -39,7 +66,8 @@ public class DaftarNilaiPanel extends BasePanel {
         StyledButton btnExp = new StyledButton("📄 Export");  btnExp.setPreferredSize(new Dimension(100,Theme.BTN_HEIGHT));
         btnExp.addActionListener(e->showSuccess("Export Excel memerlukan Apache POI library.\nTambahkan poi-ooxml ke project."));
         fi.add(new JLabel("Kelas:")); fi.add(cmbKelas); fi.add(btnT); fi.add(btnExp);
-        fc.add(fi, BorderLayout.CENTER); top.add(fc); top.add(Box.createVerticalStrut(Theme.GAP_MD));
+        
+        fc.add(fi, BorderLayout.CENTER); wrapper.add(fc); wrapper.add(Box.createVerticalStrut(Theme.GAP_MD));
 
         JPanel card = buildCard();
         card.add(buildCardHeader("📋  Daftar Nilai Siswa"), BorderLayout.NORTH);
@@ -49,8 +77,13 @@ public class DaftarNilaiPanel extends BasePanel {
         for(int i=0;i<ws.length;i++) table.getColumnModel().getColumn(i).setPreferredWidth(ws[i]);
         JScrollPane sc = new JScrollPane(table); sc.setBorder(BorderFactory.createEmptyBorder());
         card.add(sc, BorderLayout.CENTER);
-        main.add(top, BorderLayout.NORTH); main.add(card, BorderLayout.CENTER);
-        add(main, BorderLayout.CENTER);
+
+        //untuk manggil semua main panel
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setOpaque(false);
+        mainPanel.add(wrapper, BorderLayout.NORTH);
+
+        add(mainPanel, BorderLayout.CENTER);         
     }
 
     public void init() { cmbKelas.removeAllItems(); for(Kelas k:kelasDao.findAll()) cmbKelas.addItem(k); }

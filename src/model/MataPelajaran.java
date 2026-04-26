@@ -5,7 +5,6 @@ public class MataPelajaran {
     private String kodeMapel;
     private String namaMapel;
     private double kkm;
-    private String kategori;
  
     public MataPelajaran() {}
  
@@ -17,8 +16,6 @@ public class MataPelajaran {
     public void setNamaMapel(String v) { this.namaMapel = v; }
     public double getKkm()             { return kkm; }
     public void setKkm(double v)       { this.kkm = v; }
-    public String getKategori()        { return kategori; }
-    public void setKategori(String v)  { this.kategori = v; }
  
     @Override
     public String toString() { return namaMapel; }

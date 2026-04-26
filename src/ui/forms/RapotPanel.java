@@ -13,6 +13,7 @@ import javax.swing.border.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
+import ui.components.StyledButton;
 
 /**
  * RapotPanel - Rapot Siswa
@@ -31,15 +32,51 @@ public class RapotPanel extends BasePanel {
     public RapotPanel() { buildUI(); }
 
     private void buildUI() {
-        JPanel main = new JPanel(new BorderLayout()); main.setOpaque(false);
-        JPanel top  = new JPanel(); top.setOpaque(false); top.setLayout(new BoxLayout(top, BoxLayout.Y_AXIS));
-        top.add(buildPageHeader("Rapot Siswa","Generate dan cetak rapot per semester"));
-        top.add(Box.createVerticalStrut(Theme.GAP_LG));
+        JPanel main = new JPanel(new BorderLayout()); 
+        main.setOpaque(false);
 
-        JPanel filterCard = buildCard(); filterCard.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
-        JPanel fi = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10)); fi.setBackground(Color.WHITE);
-        cmbKelas = new JComboBox<>(); cmbKelas.setFont(Theme.FONT_REGULAR); cmbKelas.setPreferredSize(new Dimension(200,Theme.INPUT_HEIGHT));
-        cmbSiswa = new JComboBox<>(); cmbSiswa.setFont(Theme.FONT_REGULAR); cmbSiswa.setPreferredSize(new Dimension(220,Theme.INPUT_HEIGHT));
+        // ── HEADER (KIRI) ──
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setOpaque(false);
+        headerPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 70));
+        headerPanel.setBorder(new EmptyBorder(0, 0, Theme.GAP_LG, 0));
+
+        JPanel headerText = new JPanel();
+        headerText.setOpaque(false);
+        headerText.setLayout(new BoxLayout(headerText, BoxLayout.Y_AXIS));
+
+        JLabel titleLabel = new JLabel("Rapot Siswa");
+        titleLabel.setFont(Theme.FONT_TITLE);
+        titleLabel.setForeground(Theme.TEXT_DARK);
+
+        JLabel subtitleLabel = new JLabel("Generate dan cetak rapot per semester");
+        subtitleLabel.setFont(Theme.FONT_SUBTITLE);
+        subtitleLabel.setForeground(Theme.TEXT_MUTED);
+
+        headerText.add(titleLabel);
+        headerText.add(Box.createVerticalStrut(3));
+        headerText.add(subtitleLabel);
+
+        headerPanel.add(headerText, BorderLayout.WEST);
+
+        // ── TOP SECTION ──
+        JPanel top = new JPanel();
+        top.setOpaque(false);
+        top.setLayout(new BoxLayout(top, BoxLayout.Y_AXIS));
+        top.add(headerPanel);
+        top.add(Box.createVerticalStrut(Theme.GAP_XS));
+
+        // ── FILTER CARD ──
+        JPanel filterCard = buildCard(); 
+        filterCard.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+        JPanel fi = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10)); 
+        fi.setBackground(Color.WHITE);
+        cmbKelas = new JComboBox<>(); 
+        cmbKelas.setFont(Theme.FONT_REGULAR); 
+        cmbKelas.setPreferredSize(new Dimension(200,Theme.INPUT_HEIGHT));
+        cmbSiswa = new JComboBox<>(); 
+        cmbSiswa.setFont(Theme.FONT_REGULAR); 
+        cmbSiswa.setPreferredSize(new Dimension(220,Theme.INPUT_HEIGHT));
         cmbKelas.addActionListener(e -> {
             Kelas k = (Kelas) cmbKelas.getSelectedItem();
             if (k != null) {
@@ -47,28 +84,36 @@ public class RapotPanel extends BasePanel {
                 for (Siswa s : siswaDao.findByKelas(k.getKelasId())) cmbSiswa.addItem(s);
             }
         });
-        JButton btnPreview = new JButton("👁 Preview Rapot");
-        btnPreview.setBackground(Theme.PRIMARY); btnPreview.setForeground(Color.WHITE);
-        btnPreview.setFont(Theme.FONT_BOLD); btnPreview.setPreferredSize(new Dimension(150, Theme.BTN_HEIGHT));
-        btnPreview.addActionListener(e -> generateRapot());
-        fi.add(new JLabel("Kelas:")); fi.add(cmbKelas);
-        fi.add(new JLabel("  Siswa:")); fi.add(cmbSiswa);
-        fi.add(btnPreview);
+        StyledButton btnAdd = new StyledButton("👁 Preview Rapot");
+        btnAdd.setPreferredSize(new Dimension(150,Theme.BTN_HEIGHT));        
+        btnAdd.addActionListener(e -> generateRapot());
+
+        fi.add(new JLabel("Kelas:")); 
+        fi.add(cmbKelas);
+        fi.add(new JLabel("  Siswa:")); 
+        fi.add(cmbSiswa);
+        fi.add(btnAdd);
         filterCard.add(fi, BorderLayout.CENTER);
+
         top.add(filterCard);
         top.add(Box.createVerticalStrut(Theme.GAP_MD));
 
-        previewPanel = new JPanel(new BorderLayout()); previewPanel.setBackground(Color.WHITE);
+        // ── PREVIEW PANEL ──
+        previewPanel = new JPanel(new BorderLayout()); 
+        previewPanel.setBackground(Color.WHITE);
         previewPanel.setBorder(new LineBorder(Theme.BORDER,1,true));
         JLabel placeholder = new JLabel("Pilih kelas dan siswa, lalu klik 'Preview Rapot'", SwingConstants.CENTER);
-        placeholder.setFont(Theme.FONT_SUBTITLE); placeholder.setForeground(Theme.TEXT_MUTED);
+        placeholder.setFont(Theme.FONT_SUBTITLE); 
+        placeholder.setForeground(Theme.TEXT_MUTED);
         previewPanel.add(placeholder, BorderLayout.CENTER);
 
-        JScrollPane sc = new JScrollPane(previewPanel); sc.setBorder(BorderFactory.createEmptyBorder());
-        main.add(top, BorderLayout.NORTH); main.add(sc, BorderLayout.CENTER);
+        JScrollPane sc = new JScrollPane(previewPanel); 
+        sc.setBorder(BorderFactory.createEmptyBorder());
+
+        main.add(top, BorderLayout.NORTH); 
+        main.add(sc, BorderLayout.CENTER);
         add(main, BorderLayout.CENTER);
     }
-
     public void init() {
         cmbKelas.removeAllItems();
         for (Kelas k : kelasDao.findAll()) cmbKelas.addItem(k);

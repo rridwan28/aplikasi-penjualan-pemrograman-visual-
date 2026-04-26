@@ -134,7 +134,7 @@ public class MasterUserPanel extends BasePanel {
         
         add(outerScroll, BorderLayout.CENTER);
 
-        // Add card directly below wrapper in a fixed layout
+        // untuk manggil main panel
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setOpaque(false);
         mainPanel.add(wrapper, BorderLayout.NORTH);

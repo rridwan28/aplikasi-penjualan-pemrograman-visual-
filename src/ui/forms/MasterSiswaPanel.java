@@ -27,16 +27,37 @@ public class MasterSiswaPanel extends BasePanel {
     }
 
     private void buildUI() {
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setOpaque(false);
-
-        // ─ top wrapper ─
         JPanel wrapper = new JPanel();
         wrapper.setOpaque(false);
         wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.Y_AXIS));
+        wrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
+        wrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        
+        // Header        
+        JPanel headerPanel = new JPanel((new BorderLayout()));
+        headerPanel.setOpaque(false);
+        headerPanel.setBorder(new EmptyBorder(0, 0, Theme.GAP_LG, 0));
+       
+        JPanel headerText = new JPanel();
+        headerText.setOpaque(false);
+        headerText.setLayout(new BoxLayout(headerText, BoxLayout.Y_AXIS));        
+        
+        JLabel titleLabel = new JLabel("Master Siswa");
+        titleLabel.setFont(Theme.FONT_TITLE);
+        titleLabel.setForeground(Theme.TEXT_DARK);  
+      
+        JLabel subtitleLabel = new JLabel("Data seluruh siswa yang terdaftar di sekolah");
+        subtitleLabel.setFont(Theme.FONT_SUBTITLE);
+        subtitleLabel.setForeground(Theme.TEXT_MUTED);
+        
+        headerText.add(titleLabel);
+        headerText.add(Box.createVerticalStrut(3));
+        headerText.add(subtitleLabel);
 
-        wrapper.add(buildPageHeader("Master Siswa", "Data seluruh siswa yang terdaftar di sekolah"));
-        wrapper.add(Box.createVerticalStrut(Theme.GAP_LG));
+        headerPanel.add(headerText, BorderLayout.WEST);
+
+        wrapper.add(headerPanel);
+        wrapper.add(Box.createVerticalStrut(Theme.GAP_XS));    
 
         txtSearch = buildSearchField("🔍  Cari nama atau NIS...");
         txtSearch.addKeyListener(new KeyAdapter() {
@@ -122,9 +143,13 @@ public class MasterSiswaPanel extends BasePanel {
         hint.setForeground(Theme.TEXT_MUTED);
         footer.add(hint);
         card.add(footer, BorderLayout.SOUTH);
-
+        
+        //untuk manggil semua main panel
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setOpaque(false);
         mainPanel.add(wrapper, BorderLayout.NORTH);
         mainPanel.add(card, BorderLayout.CENTER);
+
         add(mainPanel, BorderLayout.CENTER);
     }
 

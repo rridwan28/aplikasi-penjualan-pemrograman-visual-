@@ -34,7 +34,7 @@ public class DashboardGuruPanel extends JPanel {
     /** Dipanggil setiap kali dashboard ditampilkan — load data fresh. */
     public void init() {
         removeAll();
-        guruProfil = guruDAO.findByUserId(Session.currentUser.getUserId());
+        guruProfil = guruDAO.findByNamaLengkap(Session.currentUser.getNamaLengkap());
         buildUI();
         revalidate();
         repaint();

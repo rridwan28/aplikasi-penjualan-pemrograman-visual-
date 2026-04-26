@@ -1,6 +1,7 @@
 package ui.forms;
 
 import dao.GuruDAO;
+import dao.MataPelajaranDAO;
 import dao.UserDAO;
 import model.Guru;
 import model.User;
@@ -13,6 +14,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
+import model.MataPelajaran;
 
 /**
  * MasterGuruPanel - Manajemen Data Guru (Admin Only)
@@ -36,15 +38,38 @@ public class MasterGuruPanel extends BasePanel {
     public MasterGuruPanel() { buildUI(); }
 
     private void buildUI() {
-        JPanel main = new JPanel(new BorderLayout()); main.setOpaque(false);
+        JPanel wrapper = new JPanel();
+        wrapper.setOpaque(false);
+        wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.Y_AXIS));
+        wrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
+        wrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        
+        // Header        
+        JPanel headerPanel = new JPanel((new BorderLayout()));
+        headerPanel.setOpaque(false);
+        headerPanel.setBorder(new EmptyBorder(0, 0, Theme.GAP_LG, 0));
+       
+        JPanel headerText = new JPanel();
+        headerText.setOpaque(false);
+        headerText.setLayout(new BoxLayout(headerText, BoxLayout.Y_AXIS));        
+        
+        JLabel titleLabel = new JLabel("Master Guru");
+        titleLabel.setFont(Theme.FONT_TITLE);
+        titleLabel.setForeground(Theme.TEXT_DARK);  
+      
+        JLabel subtitleLabel = new JLabel("Kelola data guru beserta mata pelajaran yang diampu");
+        subtitleLabel.setFont(Theme.FONT_SUBTITLE);
+        subtitleLabel.setForeground(Theme.TEXT_MUTED);
+        
+        headerText.add(titleLabel);
+        headerText.add(Box.createVerticalStrut(3));
+        headerText.add(subtitleLabel);
 
-        // ── Top wrapper ──
-        JPanel top = new JPanel(); top.setOpaque(false);
-        top.setLayout(new BoxLayout(top, BoxLayout.Y_AXIS));
+        headerPanel.add(headerText, BorderLayout.WEST);
 
-        top.add(buildPageHeader("Master Guru", "Kelola data guru beserta mata pelajaran yang diampu"));
-        top.add(Box.createVerticalStrut(Theme.GAP_LG));
-
+        wrapper.add(headerPanel);
+        wrapper.add(Box.createVerticalStrut(Theme.GAP_XS));    
+        
         // Toolbar
         txtSearch = buildSearchField("🔍  Cari nama atau NIP...");
         txtSearch.addKeyListener(new KeyAdapter() {
@@ -70,8 +95,8 @@ public class MasterGuruPanel extends BasePanel {
         btnTambah.setPreferredSize(new Dimension(150, Theme.BTN_HEIGHT));
         btnTambah.addActionListener(e -> openForm(null));
 
-        top.add(buildToolbar(new JComponent[]{txtSearch, cmbStatus}, new JComponent[]{btnTambah}));
-        top.add(Box.createVerticalStrut(Theme.GAP_MD));
+        wrapper.add(buildToolbar(new JComponent[]{txtSearch, cmbStatus}, new JComponent[]{btnTambah}));
+        wrapper.add(Box.createVerticalStrut(Theme.GAP_MD));
 
         // ── Table card ──
         JPanel card = buildCard();
@@ -106,7 +131,7 @@ public class MasterGuruPanel extends BasePanel {
             if (table.getSelectedRow() < 0) return;
             Guru g = currentData.get(table.getSelectedRow());
             boolean newStatus = !g.isStatusAktif();
-            if (guruDAO.updateStatus(g.getGuruId(), newStatus)) { loadData(); }
+            if (guruDAO.update(g)) { loadData(); }
             else showError("Gagal mengubah status guru.");
         });
         popup.add(editItem);
@@ -127,9 +152,13 @@ public class MasterGuruPanel extends BasePanel {
         footer.add(hint);
         card.add(footer, BorderLayout.SOUTH);
 
-        main.add(top, BorderLayout.NORTH);
-        main.add(card, BorderLayout.CENTER);
-        add(main, BorderLayout.CENTER);
+        //untuk manggil semua main panel
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setOpaque(false);
+        mainPanel.add(wrapper, BorderLayout.NORTH);
+        mainPanel.add(card, BorderLayout.CENTER);
+
+        add(mainPanel, BorderLayout.CENTER);
     }
 
     public void loadData() {
@@ -167,7 +196,7 @@ public class MasterGuruPanel extends BasePanel {
         boolean isEdit = existing != null;
         JDialog dlg = new JDialog((Frame) SwingUtilities.getWindowAncestor(this),
             isEdit ? "Edit Profil Guru" : "Tambah Guru Baru", true);
-        dlg.setSize(500, isEdit ? 400 : 480);
+        dlg.setSize(500, isEdit ? 400 : 380);
         dlg.setLocationRelativeTo(this);
 
         JPanel body = new JPanel();
@@ -175,95 +204,140 @@ public class MasterGuruPanel extends BasePanel {
         body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
         body.setBorder(new EmptyBorder(20, 24, 10, 24));
 
-        // Jika tambah baru: butuh username + password juga
-        JTextField txtNama   = field(isEdit ? existing.getNamaLengkap() : "");
-        JTextField txtEmail  = field(isEdit && existing.getEmail() != null ? existing.getEmail() : "");
-        JTextField txtNip    = field(isEdit ? existing.getNip() : "");
-        JTextField txtMapel  = field(isEdit ? existing.getMataPelajaran() : "");
-        JTextField txtTelp   = field(isEdit ? existing.getNoTelp() : "");
-        JPasswordField txtPwd = new JPasswordField();
-        styleComp(txtPwd);
-        JTextField txtUsername = field("");
+        // Dropdown nama guru (dari users yang role='guru')
+        JComboBox<User> cmbNama = new JComboBox<>();
+        cmbNama.setFont(Theme.FONT_REGULAR);
+        cmbNama.setEditable(false); // PENTING: jangan biarkan editable
+        cmbNama.setPreferredSize(new Dimension(400, Theme.INPUT_HEIGHT));      
 
-        if (!isEdit) {
-            addF(body, "Username *", txtUsername); body.add(Box.createVerticalStrut(8));
-            addF(body, "Password *", txtPwd);      body.add(Box.createVerticalStrut(8));
+        List<User> guruUsers = userDAO.findAllGuru();
+        List<Guru> guruProfilList = guruDAO.findAll();
+
+        // Filter: ambil user yang BELUM punya profil di tabel guru
+        for (User u : guruUsers) {
+            boolean sudahAda = false;
+            for (Guru g : guruProfilList) {
+                if (g.getNamaLengkap().equals(u.getNamaLengkap())) {
+                    sudahAda = true;
+                    break;
+                }
+            }
+
+            // Hanya tambahkan user yang belum punya profil (atau jika sedang edit user itu)
+            if (!sudahAda || (isEdit && existing != null && existing.getNamaLengkap().equals(u.getNamaLengkap()))) {
+                cmbNama.addItem(u);
+                System.out.println("  Added to dropdown: " + u.getNamaLengkap());
+            }
         }
-        addF(body, "Nama Lengkap *", txtNama);    body.add(Box.createVerticalStrut(8));
-        addF(body, "Email",          txtEmail);   body.add(Box.createVerticalStrut(8));
-        addF(body, "NIP",            txtNip);     body.add(Box.createVerticalStrut(8));
-        addF(body, "Mata Pelajaran", txtMapel);   body.add(Box.createVerticalStrut(8));
-        addF(body, "No. Telepon",    txtTelp);
+        if (isEdit && cmbNama.getItemCount() > 0 && existing != null) {
+            // Set dropdown ke guru yang sedang di-edit
+            for (int i = 0; i < cmbNama.getItemCount(); i++) {
+                User u = (User) cmbNama.getItemAt(i);
+                if (u.getNamaLengkap().equals(existing.getNamaLengkap())) {
+                    cmbNama.setSelectedIndex(i);
+                    break;
+                }
+            }
+        }
+
+        JTextField txtNip   = field(isEdit && existing != null ? existing.getNip() : "");
+        
+        JComboBox<MataPelajaran> cmbMapel = new JComboBox<>();
+        cmbMapel.setFont(Theme.FONT_REGULAR);
+        cmbMapel.setEditable(false);
+        cmbMapel.setPreferredSize(new Dimension(400, Theme.INPUT_HEIGHT));
+        
+        MataPelajaranDAO mapelDAO = new MataPelajaranDAO();
+        List<MataPelajaran> mapelList = mapelDAO.findAll();
+        for (MataPelajaran m : mapelList) {
+            cmbMapel.addItem(m);
+        }
+        
+        if (isEdit && existing != null && !existing.getMataPelajaran().isEmpty()) {
+            for (MataPelajaran m : mapelList) {
+                if (m.getNamaMapel().equals(existing.getMataPelajaran())) {
+                    cmbMapel.setSelectedItem(m);
+                    break;
+                }
+            }
+        }        
+
+        
+        JTextField txtTelp  = field(isEdit && existing != null ? existing.getNoTelp() : "");
+
+        addF(body, "Nama Guru *", cmbNama);      
+        body.add(Box.createVerticalStrut(8));
+        addF(body, "NIP *", txtNip);             
+        body.add(Box.createVerticalStrut(8));
+        addF(body, "Mata Pelajaran", cmbMapel);  
+        body.add(Box.createVerticalStrut(8));
+        addF(body, "No. Telepon", txtTelp);
 
         // Footer
         JPanel foot = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 8));
         foot.setBackground(new Color(0xF9FAFB));
         foot.setBorder(new MatteBorder(1, 0, 0, 0, Theme.BORDER));
-        JButton btnC = new JButton("Batal"); btnC.addActionListener(e -> dlg.dispose());
-        JButton btnS = new JButton(isEdit ? "Simpan Perubahan" : "Tambah Guru");
-        btnS.setBackground(Theme.PRIMARY); btnS.setForeground(Color.WHITE); btnS.setFont(Theme.FONT_BOLD);
+        JButton btnC = new JButton("Batal"); 
+        btnC.addActionListener(e -> dlg.dispose());
+
+        JButton btnS = new JButton(isEdit ? "Simpan Perubahan" : "Tambah Guru");      
+        btnS.setBackground(Theme.PRIMARY); 
+        btnS.setForeground(Color.WHITE); 
+        btnS.setFont(Theme.FONT_BOLD);
+
         btnS.addActionListener(e -> {
-            if (txtNama.getText().trim().isEmpty()) {
-                JOptionPane.showMessageDialog(dlg, "Nama Lengkap wajib diisi!", "Validasi", JOptionPane.WARNING_MESSAGE);
+            User selectedUser = (User) cmbNama.getSelectedItem();
+            MataPelajaran selectedMapel = (MataPelajaran) cmbMapel.getSelectedItem();
+            String nip = txtNip.getText().trim();
+
+            if (selectedUser == null || nip.isEmpty()) {
+                JOptionPane.showMessageDialog(dlg, "Pilih Nama Guru dan isi NIP!", "Validasi", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            if (isEdit) {
-                // Update profil saja
-                existing.setNamaLengkap(txtNama.getText().trim());
-                existing.setEmail(txtEmail.getText().trim());
-                existing.setNip(txtNip.getText().trim());
-                existing.setMataPelajaran(txtMapel.getText().trim());
+
+            if (isEdit && existing != null) {
+                // Update profil guru
+                existing.setNamaLengkap(selectedUser.getNamaLengkap());
+                existing.setEmail(selectedUser.getEmail());
+                existing.setNip(nip);
+                existing.setMataPelajaran(selectedMapel != null ? selectedMapel.getNamaMapel() : "");
                 existing.setNoTelp(txtTelp.getText().trim());
 
-                // Update nama di tabel users
-                User u = new User();
-                u.setUserId(existing.getGuruId());
-                u.setNamaLengkap(existing.getNamaLengkap());
-                u.setEmail(existing.getEmail());
-                u.setUsername(""); // tidak diubah, set dummy
-                u.setRole("guru");
-                u.setStatusAktif(existing.isStatusAktif());
-
-                boolean ok = guruDAO.saveProfil(existing);
-                if (ok) { showSuccess("Profil guru berhasil disimpan."); dlg.dispose(); loadData(); }
-                else      showError("Gagal menyimpan profil guru.");
+                if (guruDAO.update(existing)) {
+                    showSuccess("Profil guru berhasil disimpan.");
+                    dlg.dispose();
+                    loadData();
+                } else {
+                    showError("Gagal menyimpan profil guru.");
+                }
             } else {
-                // Buat user baru dulu, lalu insert profil
-                if (txtUsername.getText().trim().isEmpty() || new String(txtPwd.getPassword()).isEmpty()) {
-                    JOptionPane.showMessageDialog(dlg, "Username dan password wajib diisi!", "Validasi", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-                User u = new User();
-                u.setUsername(txtUsername.getText().trim());
-                u.setPassword(new String(txtPwd.getPassword()));
-                u.setNamaLengkap(txtNama.getText().trim());
-                u.setEmail(txtEmail.getText().trim());
-                u.setRole("guru");
-                u.setStatusAktif(true);
-                boolean userOk = userDAO.insert(u);
-                if (!userOk) { showError("Gagal membuat akun. Username sudah ada?"); return; }
+                // Insert guru baru
+                Guru g = new Guru();
+                g.setNamaLengkap(selectedUser.getNamaLengkap());
+                g.setEmail(selectedUser.getEmail());
+                g.setNip(nip);
+                g.setMataPelajaran(selectedMapel != null ? selectedMapel.getNamaMapel() : "");
+                g.setNoTelp(txtTelp.getText().trim());
+                g.setStatusAktif(true);
 
-                // Dapatkan user_id yang baru dibuat
-                List<model.User> found = userDAO.search(txtUsername.getText().trim());
-                if (!found.isEmpty()) {
-                    Guru g = new Guru();
-                    g.setGuruId(found.get(0).getUserId());
-                    g.setNip(txtNip.getText().trim());
-                    g.setMataPelajaran(txtMapel.getText().trim());
-                    g.setNoTelp(txtTelp.getText().trim());
-                    guruDAO.saveProfil(g);
+                if (guruDAO.insert(g)) {
+                    showSuccess("Guru berhasil ditambahkan.");
+                    dlg.dispose();
+                    loadData();
+                } else {
+                    showError("Gagal menambahkan guru. NIP sudah ada?");
                 }
-                showSuccess("Guru berhasil ditambahkan.");
-                dlg.dispose(); loadData();
             }
         });
-        foot.add(btnC); foot.add(btnS);
+
+        foot.add(btnC); 
+        foot.add(btnS);
         dlg.setLayout(new BorderLayout());
         dlg.add(new JScrollPane(body), BorderLayout.CENTER);
         dlg.add(foot, BorderLayout.SOUTH);
         dlg.getRootPane().setDefaultButton(btnS);
         dlg.setVisible(true);
-    }
+    }       
 
     private JTextField field(String val) {
         JTextField f = new JTextField(val);
@@ -277,8 +351,16 @@ public class MasterGuruPanel extends BasePanel {
     }
 
     private void addF(JPanel p, String lbl, JComponent c) {
-        JLabel l = new JLabel(lbl); l.setFont(Theme.FONT_BOLD); l.setForeground(Theme.TEXT_BODY); l.setAlignmentX(Component.LEFT_ALIGNMENT);
-        c.setAlignmentX(Component.LEFT_ALIGNMENT); c.setMaximumSize(new Dimension(Integer.MAX_VALUE, Theme.INPUT_HEIGHT));
-        p.add(l); p.add(Box.createVerticalStrut(3)); p.add(c);
+        JLabel l = new JLabel(lbl); 
+        l.setFont(Theme.FONT_BOLD); 
+        l.setForeground(Theme.TEXT_BODY); 
+        l.setAlignmentX(Component.LEFT_ALIGNMENT);
+        c.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        c.setMaximumSize(new Dimension(Integer.MAX_VALUE, Theme.INPUT_HEIGHT));  // ← tambah ini kembali
+        
+        p.add(l); 
+        p.add(Box.createVerticalStrut(3)); 
+        p.add(c);
     }
 }
