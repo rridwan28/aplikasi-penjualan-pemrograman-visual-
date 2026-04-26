@@ -8,6 +8,7 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
+import java.net.URL;
 
 /**
  * MAIN FRAME
@@ -131,25 +132,25 @@ public class AdminMainFrame extends JFrame {
         menuPanel.add(Box.createVerticalStrut(8));
  
         // ─ Dashboard ─
-        addMenuBtn(menuPanel, "🏠  Dashboard",             "DASHBOARD");
+        addMenuBtnWithIcon(menuPanel, loadIcon("dashboard.png"), "Dashboard", "DASHBOARD");
         addSectionLabel(menuPanel, "MASTER DATA");
-        addMenuBtn(menuPanel, "👤  Master User",           "MASTER_USER");
-        addMenuBtn(menuPanel, "👨‍🎓  Master Siswa",          "MASTER_SISWA");
-        addMenuBtn(menuPanel, "👨‍🏫  Master Guru",           "MASTER_GURU");
-        addMenuBtn(menuPanel, "📚  Master Mata Pelajaran", "MASTER_MAPEL");
+        addMenuBtnWithIcon(menuPanel, loadIcon("user.png"), "Master User", "MASTER_USER");
+        addMenuBtnWithIcon(menuPanel, loadIcon("siswa.png"), "Master Siswa", "MASTER_SISWA");
+        addMenuBtnWithIcon(menuPanel, loadIcon("guru.png"), "Master Guru", "MASTER_GURU");
+        addMenuBtnWithIcon(menuPanel, loadIcon("mapel.png"), "Master Mata Pelajaran", "MASTER_MAPEL");
         addSectionLabel(menuPanel, "TRANSAKSI");
-        addMenuBtn(menuPanel, "🏫  Transaksi Kelas",       "TRANS_KELAS");
+        addMenuBtnWithIcon(menuPanel, loadIcon("kelas.png"), "Transaksi Kelas", "TRANS_KELAS");
         addSectionLabel(menuPanel, "LAPORAN");
-        addMenuBtn(menuPanel, "📊  Laporan Absensi",       "LAP_ABSENSI");
-        addMenuBtn(menuPanel, "📄  Rapot Siswa",           "RAPOT");
-        addMenuBtn(menuPanel, "📈  Rekap Kehadiran",       "REKAP");
-        addMenuBtn(menuPanel, "📋  Daftar Nilai",          "DAFTAR_NILAI");
+        addMenuBtnWithIcon(menuPanel, loadIcon("absensi.png"), "Laporan Absensi", "LAP_ABSENSI");
+        addMenuBtnWithIcon(menuPanel, loadIcon("rapot.png"), "Rapot Siswa", "RAPOT");
+        addMenuBtnWithIcon(menuPanel, loadIcon("rekap.png"), "Rekap Kehadiran", "REKAP");
+        addMenuBtnWithIcon(menuPanel, loadIcon("nilai.png"), "Daftar Nilai", "DAFTAR_NILAI");
  
         // Spacer + logout
         menuPanel.add(Box.createVerticalGlue());
         menuPanel.add(Box.createVerticalStrut(10));
  
-        JButton btnLogout = createSidebarBtn("🚪  Logout", null);
+        JButton btnLogout = createSidebarBtn("Logout", null);
         btnLogout.setForeground(Theme.DANGER);
         btnLogout.addActionListener(e -> doLogout());
         btnLogout.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
@@ -165,7 +166,23 @@ public class AdminMainFrame extends JFrame {
  
         return sidebar;
     }
- 
+    
+        private ImageIcon loadIcon(String filename) {
+            try {
+                java.net.URL imgURL = getClass().getResource("/icons/" + filename);
+
+                if (imgURL != null) {
+                    ImageIcon icon = new ImageIcon(imgURL);
+                    Image img = icon.getImage().getScaledInstance(18, 18, Image.SCALE_SMOOTH);
+                    return new ImageIcon(img);
+                }
+            } catch (Exception e) {
+                System.err.println("Error loading icon: " + filename);
+                e.printStackTrace();
+            }
+            return null;
+        }
+        
     private void addSectionLabel(JPanel parent, String text) {
         JLabel label = new JLabel(text);
         label.setFont(new Font(Theme.FONT_NAME, Font.BOLD, 10));
@@ -175,10 +192,10 @@ public class AdminMainFrame extends JFrame {
         parent.add(label);
     }
  
-    private void addMenuBtn(JPanel parent, String text, String pageKey) {
-        JButton btn = createSidebarBtn(text, pageKey);
-        btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 44));
-        btn.setPreferredSize(new Dimension(Integer.MAX_VALUE, 44));
+    private void addMenuBtnWithIcon(JPanel parent, ImageIcon icon, String text, String pageKey) {
+        JButton btn = createSidebarBtn(text, icon);
+        btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
+        btn.setPreferredSize(new Dimension(Integer.MAX_VALUE, 38));
         btn.addActionListener(e -> {
             showPage(pageKey);
             setActiveMenu(btn);
@@ -191,7 +208,7 @@ public class AdminMainFrame extends JFrame {
         }
     }
  
-    private JButton createSidebarBtn(String text, String pageKey) {
+    private JButton createSidebarBtn(String text, ImageIcon icon) {
         JButton btn = new JButton(text) {
             boolean active = false;
             @Override protected void paintComponent(Graphics g) {
@@ -218,6 +235,7 @@ public class AdminMainFrame extends JFrame {
                 repaint();
             }
         };
+        btn.setIcon(icon);
         btn.setHorizontalAlignment(SwingConstants.LEFT);
         btn.setHorizontalTextPosition(SwingConstants.RIGHT);
         btn.setIconTextGap(10);        
