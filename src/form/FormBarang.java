@@ -38,7 +38,7 @@ public class FormBarang extends javax.swing.JFrame {
         } catch (Exception e) {
             // Abaikan jika gagal mengembalikan tema
         }
-        tbl_brg.setDefaultEditor(Object.class, null);   
+        
         kosong();
         aktif();
         datatable();
