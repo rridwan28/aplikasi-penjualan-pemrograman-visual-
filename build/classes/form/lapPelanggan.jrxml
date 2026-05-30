@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ee74d791-73af-4ef3-8526-8aaf95600f48">
+    <property name="ireport.zoom" value="1.100000000000009"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <style name="table">
+        <box>
+            <pen lineWidth="1.0" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <queryString language="SQL">
+        <![CDATA[SELECT
+     pelanggan.`id` AS pelanggan_id,
+     pelanggan.`nmplgn` AS pelanggan_nmplgn,
+     pelanggan.`jenis` AS pelanggan_jenis,
+     pelanggan.`telepon` AS pelanggan_telepon,
+     pelanggan.`alamat` AS pelanggan_alamat
+FROM
+     `pelanggan` pelanggan]]>
+    </queryString>
+    <field name="pelanggan_id" class="java.lang.String"/>
+    <field name="pelanggan_nmplgn" class="java.lang.String"/>
+    <field name="pelanggan_jenis" class="java.lang.String"/>
+    <field name="pelanggan_telepon" class="java.lang.String"/>
+    <field name="pelanggan_alamat" class="java.lang.String"/>
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+    <title>
+        <band height="5" splitType="Stretch"/>
+    </title>
+    <pageHeader>
+        <band height="45" splitType="Stretch">
+            <staticText>
+                <reportElement x="139" y="4" width="268" height="30" uuid="855fd30f-b9eb-43eb-92f8-c21b28a3ff44"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="20" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Laporan Data Pelanggan]]></text>
+            </staticText>
+        </band>
+    </pageHeader>
+    <columnHeader>
+        <band height="30" splitType="Stretch">
+            <line>
+                <reportElement x="-1" y="4" width="556" height="1" uuid="e0b82f0c-1db2-4bf1-bf17-06834b9d5cda"/>
+                <graphicElement>
+                    <pen lineWidth="1.5"/>
+                </graphicElement>
+            </line>
+            <staticText>
+                <reportElement x="0" y="5" width="100" height="24" uuid="a0041a77-1e18-439f-bfea-b31f942f62dd"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[ID Pelanggan]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="105" y="5" width="117" height="24" uuid="ace10838-e8ca-4f90-8cf9-c2d60b2a2b1d"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Nama Pelanggan]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="227" y="5" width="117" height="24" uuid="b33e7e9c-d504-423c-83c5-83d2be1e2bda"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Jenis Kelamin]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="344" y="5" width="98" height="24" uuid="179a76ad-88ec-4ee8-916e-e363bb630a1d"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Telepon]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="443" y="5" width="112" height="24" forecolor="#000000" uuid="c7b9a15e-ca47-48b6-ab7f-bfe2b668ac90"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Alamat]]></text>
+            </staticText>
+            <line>
+                <reportElement x="-1" y="4" width="1" height="26" uuid="fd753573-4d52-49d4-86bc-037bdb4e843d"/>
+            </line>
+            <line>
+                <reportElement x="99" y="4" width="1" height="26" uuid="0916b242-b91c-4122-984c-7aabda6ac129"/>
+            </line>
+            <line>
+                <reportElement x="222" y="4" width="1" height="26" uuid="6c978223-7143-4d0d-983b-88356b4c5eb5"/>
+            </line>
+            <line>
+                <reportElement x="343" y="4" width="1" height="26" uuid="a2070f95-c1b3-4b48-8487-ffecd98d42c9"/>
+            </line>
+            <line>
+                <reportElement x="442" y="4" width="1" height="26" uuid="43ca8afc-ea81-410f-b32d-ece3eb0f9471"/>
+            </line>
+            <line>
+                <reportElement x="554" y="4" width="1" height="26" uuid="0b2a5ac4-007e-405d-810e-051ed6f73a7f"/>
+            </line>
+            <line>
+                <reportElement x="-1" y="29" width="556" height="1" uuid="9cb4fbc2-99bd-49a3-a044-8cb3bda5c1eb"/>
+                <graphicElement>
+                    <pen lineWidth="1.5"/>
+                </graphicElement>
+            </line>
+        </band>
+    </columnHeader>
+    <detail>
+        <band height="30" splitType="Stretch">
+            <line>
+                <reportElement x="-1" y="0" width="1" height="30" uuid="0532415f-5058-4f0d-a254-c1db6eec94e1"/>
+            </line>
+            <line>
+                <reportElement x="99" y="0" width="1" height="30" uuid="c7c396e5-af37-4c30-8237-18b37fd75b26"/>
+            </line>
+            <line>
+                <reportElement x="222" y="0" width="1" height="30" uuid="05634228-63eb-4d65-9f1d-287c316bbd85"/>
+            </line>
+            <line>
+                <reportElement x="343" y="0" width="1" height="30" uuid="4bb5162e-5ca5-4826-875a-b7bd81c4623b"/>
+            </line>
+            <line>
+                <reportElement x="442" y="0" width="1" height="30" uuid="3806d840-081b-4879-8b48-7597118f4382"/>
+            </line>
+            <line>
+                <reportElement x="554" y="0" width="1" height="30" uuid="a2af8791-0d0e-4679-b50b-caa8e4a49958"/>
+            </line>
+            <textField>
+                <reportElement x="0" y="5" width="99" height="20" uuid="0c8b2c62-8458-4246-81b8-31e36b908866"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{pelanggan_id}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="100" y="5" width="122" height="20" uuid="7c2a951a-7474-4703-84b6-108720ad12a4"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{pelanggan_nmplgn}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="223" y="5" width="120" height="20" uuid="7c5664a7-e13c-45fb-adb9-9ccfc51021e7"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{pelanggan_jenis}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="344" y="5" width="98" height="20" uuid="198941a7-4bac-4f5f-83e5-393eecf7eeac"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{pelanggan_telepon}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="443" y="5" width="111" height="20" uuid="6b88005f-8363-4945-8dd0-3ee063709776"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="10" isStrikeThrough="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{pelanggan_alamat}]]></textFieldExpression>
+            </textField>
+            <line>
+                <reportElement x="-1" y="29" width="556" height="1" uuid="61075c35-dca3-488b-bc1f-827fb7058df2"/>
+                <graphicElement>
+                    <pen lineWidth="0.5" lineColor="#CCCCCC"/>
+                </graphicElement>
+            </line>
+        </band>
+    </detail>
+    <columnFooter>
+        <band height="20" splitType="Stretch"/>
+    </columnFooter>
+    <pageFooter>
+        <band height="30" splitType="Stretch"/>
+    </pageFooter>
+    <summary>
+        <band height="20" splitType="Stretch"/>
+    </summary>
+</jasperReport>
