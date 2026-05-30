@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 25, 2026 at 05:32 PM
+-- Generation Time: May 30, 2026 at 04:18 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -47,6 +47,38 @@ INSERT INTO `barang` (`kd_barang`, `nm_brg`, `jenis`, `hargabeli`, `hargajual`) 
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `isi`
+--
+
+CREATE TABLE `isi` (
+  `idnota` varchar(20) NOT NULL,
+  `kd_barang` varchar(20) NOT NULL,
+  `harga_beli` int(11) NOT NULL,
+  `harga_jual` int(11) NOT NULL,
+  `qty` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `isi`
+--
+
+INSERT INTO `isi` (`idnota`, `kd_barang`, `harga_beli`, `harga_jual`, `qty`) VALUES
+('IN0001', 'B001', 5000, 6000, 2),
+('IN0001', 'B004', 6000, 7500, 12),
+('IN0002', 'B001', 5000, 6000, 4),
+('IN0002', 'B003', 2200, 3500, 3),
+('IN0003', 'B003', 2200, 3500, 2),
+('IN0003', 'B004', 6000, 7500, 12),
+('IN0004', 'B003', 2200, 3500, 12),
+('IN0004', 'B004', 6000, 7500, 11),
+('IN0005', 'B001', 5000, 6000, 12),
+('IN0005', 'B003', 2200, 3500, 5),
+('IN0006', 'B003', 2200, 3500, 12),
+('IN0006', 'B004', 6000, 7500, 4);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `kasir`
 --
 
@@ -66,6 +98,32 @@ CREATE TABLE `kasir` (
 
 INSERT INTO `kasir` (`id_kasir`, `nm_kasir`, `jenis_kelamin`, `no_telepon`, `agama`, `alamat`, `password`) VALUES
 ('K001', 'Ridwan', 'Laki-Laki', '0812345678', 'Islam', 'Kota Bekasi', 'ridwan123');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `nota`
+--
+
+CREATE TABLE `nota` (
+  `idnota` varchar(20) NOT NULL,
+  `tgl_nota` date NOT NULL,
+  `id_pelanggan` varchar(20) NOT NULL,
+  `total_harga` int(11) NOT NULL,
+  `id_kasir` varchar(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `nota`
+--
+
+INSERT INTO `nota` (`idnota`, `tgl_nota`, `id_pelanggan`, `total_harga`, `id_kasir`) VALUES
+('IN0001', '2026-05-30', 'ID001', 102000, ''),
+('IN0002', '2026-05-30', 'ID001', 34500, 'K001'),
+('IN0003', '2026-05-30', 'ID004', 97000, 'K001'),
+('IN0004', '2026-05-30', 'ID002', 124500, 'K001'),
+('IN0005', '2026-05-30', 'ID002', 89500, 'K001'),
+('IN0006', '2026-05-30', 'ID001', 72000, 'K001');
 
 -- --------------------------------------------------------
 
@@ -109,10 +167,22 @@ ALTER TABLE `barang`
   ADD PRIMARY KEY (`kd_barang`);
 
 --
+-- Indexes for table `isi`
+--
+ALTER TABLE `isi`
+  ADD PRIMARY KEY (`idnota`,`kd_barang`);
+
+--
 -- Indexes for table `kasir`
 --
 ALTER TABLE `kasir`
   ADD PRIMARY KEY (`id_kasir`);
+
+--
+-- Indexes for table `nota`
+--
+ALTER TABLE `nota`
+  ADD PRIMARY KEY (`idnota`);
 
 --
 -- Indexes for table `pelanggan`
